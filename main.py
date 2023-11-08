@@ -19,6 +19,7 @@ api.load_info('https://codeforces.com')
 
 button = ButtonActions()
 
+# Test program
 while not button.exit_program:
 
     total_result = defaultdict(list)
