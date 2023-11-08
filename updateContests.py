@@ -21,7 +21,7 @@ def update_contests():
 
             standings_dict = normalise_file(standings['rows'], score)
 
-            data.total_result = getTotalTable(standings_dict, data.order_of_key, contests_type, data.total_result)
+            getTotalTable(standings_dict, contests_type)
 
             final_result_df = pd.DataFrame(standings_dict)
             final_result_df.to_excel(data.writer, f'contest{contest_id}')
