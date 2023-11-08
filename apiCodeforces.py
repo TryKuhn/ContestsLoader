@@ -37,6 +37,7 @@ class CodeforcesApi(Api):
         )
         if response.status_code != 200:
             raise RuntimeError("Codeforces API error: " + response.json()["comment"])
+        time.sleep(1)
         return response.json()["result"]
 
     def get_standings(self, contest_id: int | str,

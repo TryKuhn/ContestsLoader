@@ -1,6 +1,8 @@
 import json
 import logging
 import os
+import re
+from typing import List, Any
 
 
 # Base Api, which will be used to initialise other specific apies
@@ -15,7 +17,7 @@ class Api:
         self.device_name = device_name
 
     # Saving info about Api to cache
-    def __save_to_cache(self, host: str):
+    def __save_to_cache(self, host: List[Any]):
         data = dict()
         data['apiKey'] = self.key
         data['apiSecret'] = self.secret
@@ -23,15 +25,16 @@ class Api:
         data['deviceId'] = self.device_id
         data['deviceName'] = self.device_name
 
-        write_api = open(f'cache/Api{host}.json', 'w')
+        write_api = open(f'cache/Api{host[3]}.json', 'w')
         json.dump(data, write_api)
         write_api.close()
 
     # Load info about Api info
     def load_info(self, host: str):
         # Load info from JSON-file
-        if os.path.exists(f'cache/Api{host}.json'):
-            api = open(f'cache/Api{host}.json')
+        host = re.split('[/:.]', host)
+        if os.path.exists(f'cache/Api{host[3]}.json'):
+            api = open(f'cache/Api{host[3]}.json')
             data = json.load(api)
             self.key = data['apiKey']
             self.secret = data['apiSecret']

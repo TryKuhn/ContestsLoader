@@ -1,14 +1,30 @@
-from main import total_result, contests_id
+import logging
+
+import data
 
 
 # Get table with final results and normalise marks
-def update_final(coefficients):
-    for type_of_contests in coefficients.keys():
-        for index in range(len(total_result['names'])):
-            total_result[type_of_contests] = round(total_result[type_of_contests] / len(contests_id[type_of_contests]), 2)
-            mark = total_result[type_of_contests]
+def update_final():
+    data.total_result['total'] = []
+    for type_of_contests in data.total_result.keys():
+        if type_of_contests == 'name' or type_of_contests == 'total':
+            continue
+        for index in range(len(data.total_result['name'])):
+            while len(data.total_result[type_of_contests]) < len(data.total_result['name']):
+                data.total_result[type_of_contests].append(0)
 
-            if len(total_result['total']) <= index:
-                total_result['total'].append(coefficients[type_of_contests] * mark)
-            else:
-                total_result['total'] += coefficients[type_of_contests] * mark
+            data.total_result[type_of_contests][index] = round(data.total_result[type_of_contests][index] /
+                                                               max(len(data.contests_id[type_of_contests]), 1), 2)
+            mark = data.total_result[type_of_contests][index]
+
+            while len(data.total_result['total']) < len(data.total_result['name']):
+                data.total_result['total'].append(0.0)
+
+            data.total_result['total'][index] += mark * data.coefficients[type_of_contests] \
+                if type_of_contests in data.coefficients else 0
+
+            if type_of_contests not in data.coefficients:
+                logging.warning(f"{type_of_contests} is not in coefficients, given coefficient 0")
+
+    for index in range(len(data.total_result['name'])):
+        data.total_result['total'][index] = round(data.total_result['total'][index], 2)

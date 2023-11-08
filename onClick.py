@@ -1,6 +1,8 @@
 import json
 import logging
+import re
 from collections import defaultdict
+from pathlib import Path
 
 import keyboard
 
@@ -28,13 +30,14 @@ class ButtonActions:
             add[type_of_contest].append(add_contest)
 
         # Read JSON-file with contests id (type of contests -> list of contests)
-        read_id = open('cache/id.json')
-        dict_id = json.load(read_id)
-        read_id.close()
+        if Path('cache/id.json').stat().st_size != 0:
+            read_id = open('cache/id.json')
+            dict_id = json.load(read_id)
+            read_id.close()
 
-        for contest_type in dict_id.keys():
-            for contest in dict_id[contest_type]:
-                add[contest_type].append(contest)
+            for contest_type in dict_id.keys():
+                for contest in dict_id[contest_type]:
+                    add[contest_type].append(contest)
 
         # Update JSON-file with contests id (type of contests -> list of contests)
         write_id = open('cache/id.json', 'w')
@@ -43,19 +46,22 @@ class ButtonActions:
 
         logging.debug(f'added contests with id = {add_contests_id} of type {type_of_contest}')
 
-    # Adding coefficients to the total mark
+    # Adding coefficients.json to the total mark
     @staticmethod
     def __on_press_add_coefficients():
         print('Enter type of contest and coefficient')
-        contest_type, coefficient = input().split(' ,;:')
+        contest_type, coefficient = re.split('[ ,;:]', input())
 
-        read_coefficients = open('cache/coefficients.json')
-        dict_coefficients = json.load(read_coefficients)
-        read_coefficients.close()
+        if Path('cache/coefficients.json').stat().st_size != 0:
+            read_coefficients = open('cache/coefficients.json')
+            dict_coefficients = json.load(read_coefficients)
+            read_coefficients.close()
+        else:
+            dict_coefficients = dict()
 
         dict_coefficients[contest_type] = float(coefficient)
 
-        write_coefficients = open('cache/id.json', 'w')
+        write_coefficients = open('cache/coefficients.json', 'w')
         json.dump(dict_coefficients, write_coefficients)
         write_coefficients.close()
 
@@ -65,5 +71,5 @@ class ButtonActions:
     def __init__(self):
         self.exit_program = False
         keyboard.add_hotkey('ctrl+alt+x', self.__on_press_stop)
-        keyboard.add_hotkey('ctrl+a+d', self.__on_press_add_contests)
+        keyboard.add_hotkey('ctrl+alt+d', self.__on_press_add_contests)
         keyboard.add_hotkey('ctrl+a+c', self.__on_press_add_coefficients)
