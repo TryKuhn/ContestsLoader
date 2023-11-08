@@ -3,7 +3,7 @@ from typing import Mapping, List, Any
 
 # Update dict of the current contests type with given contest
 def getTotalTable(rows: Mapping[str, List[Any]], order_of_key: dict, contests_type: str, total_result: dict) \
-        -> Mapping[str, List[Any]]:
+        -> dict:
 
     for index in range(len(rows['name'])):
         if rows['name'][index] in order_of_key:

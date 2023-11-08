@@ -1,20 +1,40 @@
-import json
-import os.path
+import logging
+import sys
+import time
+from collections import defaultdict
 
+import pandas as pd
+
+from GetCoefficients import get_coefficients
+from UpdateFinal import update_final
 from apiCodeforces import CodeforcesApi
+from getContestsId import get_contests_id
+from onClick import ButtonActions
+from updateContests import update_contests
 
-if os.path.exists('cache/Api.json'):
-    api = open('cache/Api.json')
-    data = json.load(api)
-    api_key = data['apiKey']
-    api_secret = data['apiSecret']
-    client_key
+logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 
-print("Enter api key:")
-api_key = input()
+api = CodeforcesApi()
+api.load_info('https://codeforces.com')
 
-api_key = '20c641f1843da2b5da2cc1d3d8855a30b2e0bd74'
-api_secret = '50fe7edcd5bf211d2bbf14ad7cd38a2ee666e0df'
-api = CodeforcesApi(api_key, api_secret, 'https://codeforces.com')
+button = ButtonActions()
 
-api.get_standings('1')
+while not button.exit_program:
+
+    total_result = defaultdict(list)
+    order_of_key = dict()
+
+    contests_id = get_contests_id()
+    update_contests(contests_id)
+    logging.debug(f'contests standings are updated')
+
+    coefficients = get_coefficients()
+    update_final(coefficients)
+
+    total_result = pd.DataFrame(total_result)
+
+    writer = pd.ExcelWriter('standings.xlsx')
+    total_result.to_excel(writer, f'total')
+    writer.close()
+
+    time.sleep(10)

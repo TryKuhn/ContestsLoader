@@ -8,14 +8,19 @@ import keyboard
 # Add contests and stop program
 class ButtonActions:
     # Stop program
-    def on_press_stop(self):
+    def __on_press_stop(self):
         logging.debug('Script is stopped')
         self.exit_program = True
 
     # Add contest
     @staticmethod
-    def __on_press_add_contests(type_of_contest: str):
+    def __on_press_add_contests():
+        # Type of contests
+        print('Enter type of contests:')
+        type_of_contest = input()
+
         # Read list of contests and turn it into dict (type of contests -> list of contests)
+        print('Enter contests id:')
         add_contests_id = list(map(int, input().split(' ')))
         add = defaultdict(list)
 
@@ -38,22 +43,27 @@ class ButtonActions:
 
         logging.debug(f'added contests with id = {add_contests_id} of type {type_of_contest}')
 
-    # Thematic contests hotkey
-    def thematic_contests(self):
-        self.__on_press_add_contests('thematic')
+    # Adding coefficients to the total mark
+    @staticmethod
+    def __on_press_add_coefficients():
+        print('Enter type of contest and coefficient')
+        contest_type, coefficient = input().split(' ,;:')
 
-    # Command contests upsolving hotkey
-    def command_contests(self):
-        self.__on_press_add_contests('command')
+        read_coefficients = open('cache/coefficients.json')
+        dict_coefficients = json.load(read_coefficients)
+        read_coefficients.close()
 
-    # Scoring contests hotkey
-    def scoring_contests(self):
-        self.__on_press_add_contests('scoring')
+        dict_coefficients[contest_type] = float(coefficient)
+
+        write_coefficients = open('cache/id.json', 'w')
+        json.dump(dict_coefficients, write_coefficients)
+        write_coefficients.close()
+
+        logging.debug(f'added contest type {contest_type} with coefficient {coefficient}')
 
     # Add hotkeys
     def __init__(self):
         self.exit_program = False
-        keyboard.add_hotkey('ctrl+alt+x', self.on_press_stop)
-        keyboard.add_hotkey('ctrl+a+t', self.thematic_contests)
-        keyboard.add_hotkey('ctrl+a+i', self.scoring_contests)
-        keyboard.add_hotkey('ctrl+a+c', self.command_contests)
+        keyboard.add_hotkey('ctrl+alt+x', self.__on_press_stop)
+        keyboard.add_hotkey('ctrl+a+d', self.__on_press_add_contests)
+        keyboard.add_hotkey('ctrl+a+c', self.__on_press_add_coefficients)

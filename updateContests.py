@@ -1,8 +1,11 @@
-from main import api
+import main
+from getTotalByType import getTotalTable
+from main import api, writer, order_of_key
 import pandas as pd
 from makeTable import normalise_file
 
 
+# Update all contests standings
 def update_contests(contests_id):
     for contests_type in contests_id.keys():
         for contest_id in contests_id[contests_type]:
@@ -19,6 +22,7 @@ def update_contests(contests_id):
 
             standings_dict = normalise_file(standings['rows'], score)
 
+            main.total_result = getTotalTable(standings_dict, order_of_key, contests_type, main.total_result)
 
             final_result_df = pd.DataFrame(standings_dict)
             final_result_df.to_excel(writer, f'contest{contest_id}')
