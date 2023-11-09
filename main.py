@@ -6,7 +6,7 @@ import pandas as pd
 
 import data
 from GetCoefficients import get_coefficients
-from UpdateFinal import update_final
+from updateFinal import update_final
 from getContestsId import get_contests_id
 from onClick import ButtonActions
 from updateContests import update_contests
@@ -22,7 +22,7 @@ while not button.exit_program:
 
     # Get contests by API
     data.contests_id = get_contests_id()
-    update_contests()
+    update_contests(data.cfApi)
 
     # Update table and write sheets with contests
     data.coefficients = get_coefficients()

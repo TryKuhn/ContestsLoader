@@ -30,9 +30,10 @@ class Api:
         write_api.close()
 
     # Load info about Api info
-    def load_info(self, host: str):
+    def login(self, host: str):
         # Load info from JSON-file
-        host = re.split('[/:.]', host)
+        host = host.replace('.', '')
+        host = re.split('[/:]', host)
         if os.path.exists(f'cache/Api{host[3]}.json'):
             api = open(f'cache/Api{host[3]}.json')
             data = json.load(api)

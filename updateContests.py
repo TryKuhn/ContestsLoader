@@ -5,10 +5,10 @@ from makeTable import normalise_file
 
 
 # Update all contests standings
-def update_contests():
+def update_contests(api):
     for contests_type in data.contests_id.keys():
         for contest_id in data.contests_id[contests_type]:
-            standings = data.api.get_standings(contest_id)
+            standings = api.get_standings(contest_id)
 
             score = len(standings['problems'])
             if standings['contest']['type'] == 'IOI':
