@@ -15,6 +15,8 @@ logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 
 button = ButtonActions()
 
+# TODO: Test
+
 # Main program
 while not button.exit_program:
     # Initialize data

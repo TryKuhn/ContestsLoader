@@ -4,6 +4,7 @@ import pandas as pd
 from makeTable import normalise_file
 
 
+# Use of universal api
 # Update all contests standings
 def update_contests(api):
     for contests_type in data.contests_id.keys():

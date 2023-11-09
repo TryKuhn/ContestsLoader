@@ -11,6 +11,7 @@ import requests as req
 from apiBase import Api
 
 
+# TODO: get_standings, exception_safety, refresh_token
 class YandexApi(Api):
     def __init__(self, key: str = None, secret: str = None, host: str = None,
                  device_id: str = None, device_name: str = None, access_token: str = None, refresh_token: str = None):

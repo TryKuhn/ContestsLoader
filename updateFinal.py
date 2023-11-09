@@ -3,6 +3,8 @@ import logging
 import data
 
 
+# TODO: exception-safety
+
 # Get table with final results and normalise marks
 def update_final():
     data.total_result['total'] = []
