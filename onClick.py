@@ -21,13 +21,16 @@ class ButtonActions:
         print('Enter type of contests:')
         type_of_contest = input()
 
-        # Read list of contests and turn it into dict (type of contests -> list of contests)
+        print('Enter system of contests:')
+        contest_system = input()
+
+        # Read list of contests and turn it into dict (type of contests -> contests system -> list of contests)
         print('Enter contests id:')
         add_contests_id = list(map(int, input().split(' ')))
-        add = defaultdict(list)
+        add = defaultdict(lambda: defaultdict(list))
 
         for add_contest in add_contests_id:
-            add[type_of_contest].append(add_contest)
+            add[type_of_contest][contest_system].append(add_contest)
 
         # Read JSON-file with contests id (type of contests -> list of contests)
         if Path('cache/id.json').stat().st_size != 0:
@@ -35,9 +38,10 @@ class ButtonActions:
             dict_id = json.load(read_id)
             read_id.close()
 
-            for contest_type in dict_id.keys():
-                for contest in dict_id[contest_type]:
-                    add[contest_type].append(contest)
+            for contest in dict_id.keys():
+                for contest_system in dict_id[contest].keys():
+                    for contest_id in dict_id[contest][contest_system]:
+                        add[contest][contest_system].append(contest_id)
 
         # Update JSON-file with contests id (type of contests -> list of contests)
         write_id = open('cache/id.json', 'w')

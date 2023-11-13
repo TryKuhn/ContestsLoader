@@ -7,8 +7,8 @@ def get_mark(points: int, results: int) -> float:
     return round(points / results * 10, 2)
 
 
-# Get dict with standing of the current contest
-def normalise_file(file: List[Mapping[str, Any]], score: int) -> Mapping[str, list]:
+# Get dict with standing of the current contest (Codeforces)
+def normalise_file_codeforces(file: List[Mapping[str, Any]], score: int) -> Mapping[str, list]:
     rows = defaultdict(list)
 
     for row in file:
@@ -18,5 +18,18 @@ def normalise_file(file: List[Mapping[str, Any]], score: int) -> Mapping[str, li
                                 'handle'])
         rows['points'].append(row['points'])
         rows['mark'].append(get_mark(row['points'], score))
+
+    return rows
+
+
+def normalise_file_yandex(file: List[Mapping[str, Any]], score: int) -> Mapping[str, list]:
+    rows = defaultdict(list)
+
+    for row in file:
+        rows['name'].append(row['participantInfo']['name']
+                            if 'name' in row['participantInfo'] else
+                            row['participantInfo']['login'])
+        rows['points'].append(int(row['score']))
+        rows['mark'].append(get_mark(int(row['score']), score))
 
     return rows

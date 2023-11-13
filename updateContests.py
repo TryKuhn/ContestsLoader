@@ -1,28 +1,25 @@
 import data
 from getTotalByType import getTotalTable
 import pandas as pd
-from makeTable import normalise_file
+from parseCodeforces import parseCodeforces
+from parseYandex import parseYandex
 
 
-# Use of universal api
 # Update all contests standings
-def update_contests(api):
-    for contests_type in data.contests_id.keys():
-        for contest_id in data.contests_id[contests_type]:
-            standings = api.get_standings(contest_id)
+def update_contests():
+    for contest in data.contests_id.keys():
+        for contest_system in data.contests_id[contest].keys():
+            for contest_id in data.contests_id[contest][contest_system]:
+                if contest_system == "Yandex":
+                    standings = data.yaApi.get_standings(contest_id)
+                    standings_dict = parseYandex(standings)
+                elif contest_system == "Codeforces":
+                    standings = data.cfApi.get_standings(contest_id)
+                    standings_dict = parseCodeforces(standings)
+                else:
+                    raise RuntimeError(f"Incorrect system: {contest_system}")
 
-            score = len(standings['problems'])
-            if standings['contest']['type'] == 'IOI':
-                score = 0
-                if len(standings['rows']) != 0:
-                    for problem in standings['rows'][0]['problemResults']:
-                        score += int(problem['points'])
-                if score == 0:
-                    score = 1
+                getTotalTable(standings_dict, contest)
 
-            standings_dict = normalise_file(standings['rows'], score)
-
-            getTotalTable(standings_dict, contests_type)
-
-            final_result_df = pd.DataFrame(standings_dict)
-            final_result_df.to_excel(data.writer, f'contest{contest_id}')
+                final_result_df = pd.DataFrame(standings_dict)
+                final_result_df.to_excel(data.writer, f'contest{contest_id}')
