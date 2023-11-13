@@ -7,3 +7,5 @@ To add column, press ctrl+a+c and follow the instructions
 To add contest, press ctrl+alt+d and -//-
 
 To stop script, press ctrl+alt+x and -//-
+
+Contests standings are updating permanentely until you stop the script
