@@ -11,7 +11,7 @@ from getContestsId import get_contests_id
 from onClick import ButtonActions
 from updateContests import update_contests
 
-logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
+# logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 
 button = ButtonActions()
 
@@ -24,7 +24,7 @@ while not button.exit_program:
 
     # Get contests by API
     data.contests_id = get_contests_id()
-    update_contests(data.cfApi)
+    update_contests()
 
     # Update table and write sheets with contests
     data.coefficients = get_coefficients()

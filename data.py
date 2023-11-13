@@ -5,7 +5,6 @@ import pandas as pd
 from apiCodeforces import CodeforcesApi
 from apiYandex import YandexApi
 
-# TODO: Test
 
 # Yandex Api
 yaApi = YandexApi(host='https://api.contest.yandex.net/api/public/v2/api-docs?group=v2')

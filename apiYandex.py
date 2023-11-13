@@ -11,7 +11,6 @@ import requests as req
 from apiBase import Api
 
 
-# TODO: get_standings, exception_safety, refresh_token
 class YandexApi(Api):
     def __init__(self, key: str = None, secret: str = None, host: str = None,
                  device_id: str = None, device_name: str = None, access_token: str = None, refresh_token: str = None):
@@ -84,15 +83,14 @@ class YandexApi(Api):
 
             self.__save_to_cache(host)
 
-    # TODO
     def get_standings(self, contest_id: int | str,
                       from_: Optional[int | str] = None,
-                      count: Optional[int | str] = None,
+                      count: Optional[int | str] = '500',
                       handle: Optional[List[str]] = None,
                       group: Optional[str | int] = None,
                       as_manager: bool = False,
                       show_virtual: bool = False) -> Mapping[str, Mapping[str, Any]]:
-        params = {"contestId": contest_id}
+        params = {"from": from_}
 
         if from_ is not None:
             params["from"] = from_
@@ -112,9 +110,12 @@ class YandexApi(Api):
         if as_manager:
             params["forJudge"] = "true"
 
-        lol = req.post(f"https://api.contest.yandex.net/api/public/v2/contests/{54443}/standings?"
-                       f"Authorization: {self.access_token}")
+        params["Authorization"] = f"OAuth {self.access_token}"
 
-        # lol
+        response = req.get(f"https://api.contest.yandex.net/api/public/v2/contests/{contest_id}/standings?",
+                           headers=params)
 
-        return lol.json()
+        if response.status_code != 200:
+            raise RuntimeError("Yandex API error: " + response.json())
+        time.sleep(1)
+        return response.json()
